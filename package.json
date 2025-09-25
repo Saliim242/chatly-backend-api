@@ -13,7 +13,7 @@
   },
   "license": "ISC",
   "author": "Salim Abukar Ahmed",
-  "type": "commonjs",
+  "type": "module",
   "main": "server",
   "scripts": {
     "start": "node src/server.js",
