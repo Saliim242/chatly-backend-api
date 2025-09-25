@@ -2,25 +2,12 @@ import express from "express";
 
 const route = express.Router();
 
-route.get("/signup", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "You have successfully signed up",
-  });
-});
+import { signup, signin, signout } from "../controllers/auth.controller.js";
 
-route.get("/signin", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "You have successfully signed in",
-  });
-});
+route.get("/signup", signup);
 
-route.get("/signout", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "You have successfully signed out",
-  });
-});
+route.get("/signin", signin);
+
+route.get("/signout", signout);
 
 export default route;
