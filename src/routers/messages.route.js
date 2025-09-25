@@ -22,3 +22,5 @@ route.get("/delete", (req, res) => {
     message: "You have successfully deleted a message",
   });
 });
+
+export default route;
