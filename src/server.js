@@ -12,9 +12,9 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 // Auth
-app.use("/api/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 // Messages
-app.use("/api/messages", messagesRouter);
+app.use("/api/v1/messages", messagesRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
