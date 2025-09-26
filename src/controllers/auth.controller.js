@@ -33,18 +33,28 @@ export const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const newUser = await User.create({
+    const newUser = await User({
       fullName,
       email,
       password: hashedPassword,
       phoneNumber,
     });
 
-    return res.status(201).json({
-      success: true,
-      message: "User has been created successfully.",
-      data: newUser,
-    });
+    if (newUser) {
+      generateToken(newUser._id, res);
+
+      await newUser.save();
+      return res.status(201).json({
+        success: true,
+        message: "User has been created successfully.",
+        data: newUser,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to create user. Please try again later.",
+      });
+    }
   } catch (error) {
     console.error(`Error creating new user : ${error.message}`);
     res.status(500).json({
