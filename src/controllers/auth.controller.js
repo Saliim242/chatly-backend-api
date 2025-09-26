@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcryptjs from "bcryptjs";
+import { generateToken } from "../utils/generate.token.js";
 
 //@desc Auth controller
 //@route POST /api/v1/auth/signup
