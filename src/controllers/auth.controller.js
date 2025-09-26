@@ -52,14 +52,17 @@ export const signup = async (req, res) => {
       generateToken(newUser._id, res);
 
       await newUser.save();
-      return res
-        .status(201)
-        .json({
-          success: true,
-          message: "User has been created successfully.",
-          data: newUser,
-        })
-        .select("-password");
+      return res.status(201).json({
+        success: true,
+        message: "User has been created successfully.",
+        data: {
+          _id: newUser._id,
+          fullName: newUser.fullName,
+          email: newUser.email,
+          phoneNumber: newUser.phoneNumber,
+          profilePicture: newUser.profilePicture,
+        },
+      });
     } else {
       return res.status(400).json({
         success: false,
@@ -68,7 +71,7 @@ export const signup = async (req, res) => {
     }
   } catch (error) {
     console.error(`Error creating new user : ${error.message}`);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to create user. Please try again later.",
       error: error.message,
