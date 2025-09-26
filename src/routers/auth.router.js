@@ -4,10 +4,10 @@ const route = express.Router();
 
 import { signup, signin, signout } from "../controllers/auth.controller.js";
 
-route.get("/signup", signup);
+route.post("/signup", signup);
 
-route.get("/signin", signin);
+route.post("/signin", signin);
 
-route.get("/signout", signout);
+route.post("/signout", signout);
 
 export default route;
