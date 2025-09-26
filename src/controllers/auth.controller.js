@@ -16,6 +16,13 @@ export const signup = async (req, res) => {
       });
     }
 
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long.",
+      });
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -45,11 +52,14 @@ export const signup = async (req, res) => {
       generateToken(newUser._id, res);
 
       await newUser.save();
-      return res.status(201).json({
-        success: true,
-        message: "User has been created successfully.",
-        data: newUser,
-      });
+      return res
+        .status(201)
+        .json({
+          success: true,
+          message: "User has been created successfully.",
+          data: newUser,
+        })
+        .select("-password");
     } else {
       return res.status(400).json({
         success: false,
