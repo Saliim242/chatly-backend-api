@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generate.token.js";
+import "dotenv/config";
+import { sendWelcomeEmail } from "../emails/email.handler.js";
 
 //@desc Auth controller
 //@route POST /api/v1/auth/signup
@@ -58,10 +60,10 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
+      await newUser.save();
       generateToken(newUser._id, res);
 
-      await newUser.save();
-      return res.status(201).json({
+      res.status(201).json({
         success: true,
         message: "User has been created successfully.",
         data: {
@@ -72,6 +74,17 @@ export const signup = async (req, res) => {
           profilePicture: newUser.profilePicture,
         },
       });
+
+      try {
+        await sendWelcomeEmail(
+          newUser.email,
+          newUser.fullName,
+          process.env.CLIENT_URL
+        );
+        console.log("Welcome email sent successfully");
+      } catch (error) {
+        console.error(`Error sending welcome email: ${error.message}`);
+      }
     } else {
       return res.status(400).json({
         success: false,
