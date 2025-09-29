@@ -1,21 +1,22 @@
-import { Resend } from "resend";
+import { resendClient, sender } from "../utils/resend.email.js";
+import { createWelcomeEmailTemplate } from "../emails/email.temple.js";
 
-const api_key = process.env.RESEND_API_KEY;
+export const sendWelcomeEmail = async (email, name, clientUl) => {
+  try {
+    const { data, error } = await resendClient.emails.send({
+      from: `${sender.name} <${sender.email}>`,
+      to: email,
+      subject: `Welcome to Chattify`,
+      html: createWelcomeEmailTemplate(name, clientUl),
+    });
 
-// Initialize the Resend client with your API key
-const resend = new Resend(api_key);
-
-(async function () {
-  const { data, error } = await resend.emails.send({
-    from: "Acme <onboarding@resend.dev>",
-    to: ["delivered@resend.dev"],
-    subject: "Hello World",
-    html: "<strong>It works!</strong>",
-  });
-
-  if (error) {
-    return console.error({ error });
+    if (error) {
+      console.log(`Error sending email: ${error.message}`);
+      throw new Error(`Error sending email: ${error.message}`);
+    }
+    console.log(`Email sent successfully: ${data}`);
+  } catch (error) {
+    console.log(`Error sending email: ${error.message}`);
+    throw new Error(`Error sending email: ${error.message}`);
   }
-
-  console.log({ data });
-})();
+};
