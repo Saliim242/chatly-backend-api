@@ -40,6 +40,15 @@ export const signup = async (req, res) => {
       });
     }
 
+    const isPhoneNumberTaken = await User.findOne({ phoneNumber });
+
+    if (isPhoneNumberTaken) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this phone number already exists.",
+      });
+    }
+
     const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = await User({
       fullName,
