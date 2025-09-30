@@ -92,11 +92,53 @@ export const signup = async (req, res) => {
 //@route POST /api/v1/auth/signin
 //@access Public
 
-export const signin = (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "You have successfully signed in",
-  });
+export const signin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide all required fields to sign in",
+      });
+    }
+    const user = await User.findOne({ email });
+    if (!user)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials provided" });
+
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    if (!isPasswordValid)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials provided" });
+
+    generateToken(user._id, res);
+
+    return res.status(200).json({
+      success: true,
+      message: "You have successfully signed in",
+      data: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error(`Error signing in user : ${error.message}`);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to sign in user. Please try again later.",
+      error: error.message,
+    });
+  }
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "You have successfully signed in",
+  //   });
 };
 
 //@desc Auth controller
