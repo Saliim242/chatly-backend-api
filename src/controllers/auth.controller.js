@@ -129,7 +129,7 @@ export const signin = async (req, res) => {
 
     generateToken(user._id, res);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "You have successfully signed in",
       data: {
