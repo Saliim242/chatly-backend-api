@@ -159,6 +159,9 @@ export const signin = async (req, res) => {
 //@access Public
 
 export const signout = (req, res) => {
+  res.cookie("token", "", {
+    maxAge: 0,
+  });
   res.status(200).json({
     success: true,
     message: "You have successfully signed out",
