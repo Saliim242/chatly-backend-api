@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRouter from "./routers/auth.router.js";
 import messagesRouter from "./routers/messages.route.js";
 import connectDB from "./config/db.connections.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 connectDB();
@@ -12,6 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Auth
 app.use("/api/v1/auth", authRouter);
