@@ -51,8 +51,9 @@ export const signup = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 10);
-    const newUser = await User({
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+    const newUser = new User({
       fullName,
       email,
       password: hashedPassword,
@@ -142,16 +143,13 @@ export const signin = async (req, res) => {
     });
   } catch (error) {
     console.error(`Error signing in user : ${error.message}`);
+
     return res.status(500).json({
       success: false,
       message: "Failed to sign in user. Please try again later.",
       error: error.message,
     });
   }
-  //   res.status(200).json({
-  //     success: true,
-  //     message: "You have successfully signed in",
-  //   });
 };
 
 //@desc Auth controller
