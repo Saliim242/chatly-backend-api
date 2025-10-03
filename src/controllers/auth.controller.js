@@ -165,3 +165,9 @@ export const signout = (req, res) => {
     message: "You have successfully signed out",
   });
 };
+
+//@desc Auth controller
+//@route POST /api/v1/auth/update-profile
+//@access Private
+
+export const updateProfile = async (req, res) => {};
