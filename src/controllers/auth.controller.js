@@ -3,6 +3,7 @@ import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generate.token.js";
 import "dotenv/config";
 import { sendWelcomeEmail } from "../emails/email.handler.js";
+import cloudinary from "../utils/cloudinary.js";
 
 //@desc Auth controller
 //@route POST /api/v1/auth/signup
@@ -170,4 +171,57 @@ export const signout = (req, res) => {
 //@route POST /api/v1/auth/update-profile
 //@access Private
 
-export const updateProfile = async (req, res) => {};
+export const updateProfile = async (req, res) => {
+  const { profilePicture } = req.body;
+  try {
+    if (!profilePicture) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide all required fields to update profile",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const result = await cloudinary.uploader.upload(profilePicture, {
+      folder: "profile_pictures",
+      width: 250,
+      height: 250,
+      crop: "fill",
+    });
+
+    await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        profilePicture: result.secure_url,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error(`Error updating profile : ${error.message}`);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update profile. Please try again later.",
+      error: error.message,
+    });
+  }
+};

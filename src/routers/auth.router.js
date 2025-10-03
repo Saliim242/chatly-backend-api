@@ -17,5 +17,12 @@ route.post("/signin", signin);
 route.post("/signout", signout);
 
 route.post("/update-profile", protectedRoute, updateProfile);
+route.get("/check", protectedRoute, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "You are authenticated",
+    data: req.user,
+  });
+});
 
 export default route;
